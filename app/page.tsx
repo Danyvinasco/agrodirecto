@@ -10,7 +10,7 @@ async function ListaProductos() {
     <ul>
       {data?.map((p) => (
         <li key={p.id}>
-          {p.producto} {p.variedad} – {p.cantidad_kg} kg a ${p.precio_kg}/kg ({p.municipio})
+          {p.producto} {p.variedad} – {p.cantidad} {p.unidad} a ${p.precio}/{p.unidad} ({p.municipio})
         </li>
       ))}
     </ul>
