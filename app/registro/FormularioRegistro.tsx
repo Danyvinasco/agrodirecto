@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { MUNICIPIOS_RISARALDA } from "@/lib/municipios";
 import { limpiarTelefono, validarTelefono } from "@/lib/validaciones";
+import { rutaSegunRol } from "@/lib/roles";
 
 // Nombres de los campos que pueden tener un error.
 type Campo = "nombre" | "telefono" | "municipio" | "correo" | "contrasena" | "ley";
@@ -95,8 +96,8 @@ export default function FormularioRegistro() {
       return;
     }
 
-    // Paso 5: aquí se decidirá la pantalla según el rol. Por ahora, al catálogo.
-    router.push("/");
+    // Solo comprador -> catálogo; también vende -> "¿Qué quieres hacer hoy?"
+    router.push(rutaSegunRol(tambienVender));
   }
 
   // Borde rojo si el campo tiene error; si no, borde café suave.
