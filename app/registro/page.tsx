@@ -14,7 +14,7 @@ export default function PaginaRegistro() {
     <main className="flex flex-1 justify-center px-4 py-6 md:items-center">
       <div className="w-full max-w-md md:rounded-2xl md:bg-white md:p-8 md:shadow-md">
         <Link
-          href="/"
+          href="/login"
           aria-label="Volver"
           className="text-2xl font-bold text-cafe"
         >

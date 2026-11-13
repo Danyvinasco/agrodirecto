@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import BotonSesion from "../_componentes/BotonSesion";
 
 export const metadata: Metadata = {
   title: "¿Qué quieres hacer hoy? · AgroDirecto",
@@ -12,6 +13,9 @@ export default function PaginaElegir() {
   return (
     <main className="flex flex-1 justify-center px-4 py-10 md:items-center">
       <div className="flex w-full max-w-md flex-col items-center gap-6 md:rounded-2xl md:bg-white md:p-8 md:shadow-md">
+        <div className="flex w-full justify-end">
+          <BotonSesion />
+        </div>
         <Image
           src="/logo.png"
           alt="AgroDirecto — Del productor a tu mesa"

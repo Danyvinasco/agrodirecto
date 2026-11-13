@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { supabase } from "../lib/supabase";
+import BotonSesion from "./_componentes/BotonSesion";
 
 async function ListaProductos() {
   const { data, error } = await supabase.from("productos").select("*");
@@ -20,7 +21,10 @@ async function ListaProductos() {
 export default function Home() {
   return (
     <main style={{ padding: 24 }}>
-      <h1>Bienvenido a AgroDirecto</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+        <h1>Bienvenido a AgroDirecto</h1>
+        <BotonSesion />
+      </div>
       <Suspense fallback={<p>Cargando productos...</p>}>
         <ListaProductos />
       </Suspense>
