@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { buscarReferencia, formatearSemana, type Referencia } from "@/lib/precioReferencia";
+import { pesos } from "@/lib/formato";
 
 type Props = {
   // undefined = todavía no escogió producto (no mostramos nada).
@@ -15,8 +16,6 @@ type Props = {
 type Respuesta =
   | { para: string; tipo: "listo"; referencia: Referencia | null }
   | { para: string; tipo: "error" };
-
-const pesos = (n: number) => `$${n.toLocaleString("es-CO")}`;
 
 export default function ReferenciaSipsa({ nombreSipsa, unidad }: Props) {
   const [respuesta, setRespuesta] = useState<Respuesta | null>(null);
