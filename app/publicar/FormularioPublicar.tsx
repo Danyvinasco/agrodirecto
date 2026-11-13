@@ -219,8 +219,9 @@ export default function FormularioPublicar() {
     //    - el catálogo se pide de nuevo al servidor y ya trae el producto nuevo;
     //    - el formulario se borra, así si vuelve a "Publicar" lo encuentra limpio
     //      (con cacheComponents, Next solo escondería la pantalla con los datos viejos).
+    //    "?publicado=1" es el "tiquete" para que el catálogo muestre el aviso verde.
     // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-    window.location.href = "/";
+    window.location.href = "/?publicado=1";
   }
 
   const borde = (campo: Campo) => (errores[campo] ? "border-rojo" : "border-cafe/30");
