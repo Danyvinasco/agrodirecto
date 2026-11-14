@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { cantidadConUnidad, haceCuanto, pesos, textoCalidad } from "@/lib/formato";
 
 // Los datos de un producto que necesita la tarjeta (columnas de la tabla productos).
@@ -15,11 +16,14 @@ export type ProductoCatalogo = {
   municipio: string;
 };
 
-// Server Component: no reacciona a clics (el detalle llega en HU-06), solo muestra.
+// Server Component. Toda la tarjeta es un enlace al detalle (HU-06, criterio 1).
 // "ahora" llega desde afuera para que todas las tarjetas usen el mismo momento.
 export default function TarjetaProducto({ p, ahora }: { p: ProductoCatalogo; ahora: Date }) {
   return (
-    <article className="overflow-hidden rounded-xl border border-cafe/15 bg-white shadow-sm">
+    <Link
+      href={`/producto/${p.id}`}
+      className="block overflow-hidden rounded-xl border border-cafe/15 bg-white shadow-sm transition hover:shadow-md"
+    >
       {/* Caja 4:3 para la foto: "relative" + Image "fill" hace que la foto llene la caja. */}
       <div className="relative aspect-[4/3] bg-crema">
         {p.foto_url ? (
@@ -60,6 +64,6 @@ export default function TarjetaProducto({ p, ahora }: { p: ProductoCatalogo; aho
         <p className="text-sm">📍 {p.municipio}</p>
         <p className="text-xs text-cafe/60">{haceCuanto(p.created_at, ahora)}</p>
       </div>
-    </article>
+    </Link>
   );
 }

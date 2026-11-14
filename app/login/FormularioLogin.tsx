@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { rutaSegunRol } from "@/lib/roles";
+import { direccionInterna } from "@/lib/navegacion";
 
 type Campo = "correo" | "contrasena";
 type Errores = Partial<Record<Campo, string>>;
@@ -15,6 +16,16 @@ const estiloCampo =
 function MensajeError({ texto }: { texto?: string }) {
   if (!texto) return null;
   return <p className="mt-1 text-sm text-rojo">{texto}</p>;
+}
+
+// ¿A dónde ir después de entrar?
+// 1) Si llegó con ?volver= (ej. desde el detalle de un producto) y es una dirección interna, allá.
+// 2) Si no, según su rol (HU-02).
+// Leemos window.location aquí, solo al momento de redirigir, en vez de useSearchParams:
+// así el formulario no necesita <Suspense> y se ve de una vez, aun con internet lento.
+async function destinoTrasEntrar(idUsuario: string): Promise<string> {
+  const volver = direccionInterna(new URLSearchParams(window.location.search).get("volver"));
+  return volver ?? (await rutaDelUsuario(idUsuario));
 }
 
 // Busca en la ficha del usuario si también vende y devuelve a qué pantalla debe ir.
@@ -43,7 +54,7 @@ export default function FormularioLogin() {
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
       if (data.session) {
-        router.replace(await rutaDelUsuario(data.session.user.id));
+        router.replace(await destinoTrasEntrar(data.session.user.id));
       }
     });
   }, [router]);
@@ -80,7 +91,7 @@ export default function FormularioLogin() {
       return;
     }
 
-    const ruta = await rutaDelUsuario(data.user.id);
+    const ruta = await destinoTrasEntrar(data.user.id);
     // Next 16 guarda esta pantalla escondida al salir. Dejamos el formulario limpio
     // para que al volver no quede trabado en "Entrando..." ni guarde la contraseña.
     setContrasena("");
