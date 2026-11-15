@@ -4,6 +4,7 @@ import Image from "next/image";
 import BotonSesion from "./_componentes/BotonSesion";
 import BotonPublicar from "./_componentes/BotonPublicar";
 import AccesoPedidosRecibidos from "./_componentes/AccesoPedidosRecibidos";
+import AccesoMisPedidos from "./_componentes/AccesoMisPedidos";
 import AvisoPublicado from "./_componentes/AvisoPublicado";
 import ListaProductos from "./_catalogo/ListaProductos";
 
@@ -22,7 +23,9 @@ export default function PaginaCatalogo() {
           <Image src="/logo.png" alt="AgroDirecto" width={44} height={44} priority />
           <h1 className="text-2xl font-bold text-cafe">Catálogo</h1>
         </div>
-        <div className="flex items-center gap-3">
+        {/* flex-wrap: en un celular angosto, los accesos bajan a otra línea en vez de apretarse. */}
+        <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1">
+          <AccesoMisPedidos />
           <AccesoPedidosRecibidos />
           <BotonPublicar />
           <BotonSesion />

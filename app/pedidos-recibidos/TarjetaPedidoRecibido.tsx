@@ -13,8 +13,9 @@ type Props = {
   alCambiar: () => void; // la lista vuelve a cargar (el inventario y los avisos cambian)
 };
 
-// Las dos respuestas posibles a un pedido pendiente.
-type Respuesta = "aceptado" | "rechazado";
+// Lo que puede hacer el productor con un pedido:
+// pendiente -> "aceptado" o "rechazado" (HU-08); aceptado -> "en_camino" (HU-09).
+type Respuesta = "aceptado" | "rechazado" | "en_camino";
 
 export default function TarjetaPedidoRecibido({ pedido, ahora, alCambiar }: Props) {
   // null = mostrando los botones; "aceptado"/"rechazado" = preguntando "¿Seguro?".
@@ -27,9 +28,30 @@ export default function TarjetaPedidoRecibido({ pedido, ahora, alCambiar }: Prop
   const precio = Number(pedido.precio);
   const quedan = Number(prod.cantidad);
   const esPendiente = pedido.estado === "pendiente";
+  const esAceptado = pedido.estado === "aceptado"; // HU-09: listo para despachar
   // Criterio 6: avisar antes de tocar el botón si ya no alcanza.
   const noAlcanza = esPendiente && cantidad > quedan;
   const etiqueta = ESTADOS[pedido.estado];
+  const cuanto = cantidadConUnidad(cantidad, prod.unidad);
+
+  // La pregunta "¿Seguro?" y el botón de cada acción. Todas son definitivas.
+  const CONFIRMAR: Record<Respuesta, { pregunta: string; boton: string; color: string }> = {
+    aceptado: {
+      pregunta: `¿Aceptar ${cuanto} para ${comprador.nombre}? Se descontarán de tu inventario.`,
+      boton: "Sí, aceptar",
+      color: "bg-verde",
+    },
+    rechazado: {
+      pregunta: `¿Rechazar el pedido de ${comprador.nombre}? No se puede deshacer.`,
+      boton: "Sí, rechazar",
+      color: "bg-rojo",
+    },
+    en_camino: {
+      pregunta: `¿Ya despachaste ${cuanto} para ${comprador.nombre}? Después solo ${comprador.nombre} puede cerrar el pedido, confirmando que lo recibió.`,
+      boton: "Sí, ya salió",
+      color: "bg-verde",
+    },
+  };
 
   async function responder(respuesta: Respuesta) {
     setGuardando(true); // criterio 7: botones bloqueados mientras se guarda
@@ -129,23 +151,28 @@ export default function TarjetaPedidoRecibido({ pedido, ahora, alCambiar }: Prop
         </div>
       )}
 
-      {esPendiente && confirmando !== null && (
+      {/* HU-09, criterio 2: el pedido aceptado se marca en camino cuando sale de la finca. */}
+      {esAceptado && confirmando === null && (
+        <button
+          type="button"
+          onClick={() => setConfirmando("en_camino")}
+          className="rounded-lg bg-verde py-3 font-semibold text-white"
+        >
+          🚚 Marcar en camino
+        </button>
+      )}
+
+      {confirmando !== null && (
         <div className="flex flex-col gap-3 rounded-lg bg-crema p-3">
-          <p className="text-sm font-semibold">
-            {confirmando === "aceptado"
-              ? `¿Aceptar ${cantidadConUnidad(cantidad, prod.unidad)} para ${comprador.nombre}? Se descontarán de tu inventario.`
-              : `¿Rechazar el pedido de ${comprador.nombre}? No se puede deshacer.`}
-          </p>
+          <p className="text-sm font-semibold">{CONFIRMAR[confirmando].pregunta}</p>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
               onClick={() => responder(confirmando)}
               disabled={guardando}
-              className={`rounded-lg py-3 font-semibold text-white disabled:opacity-60 ${
-                confirmando === "aceptado" ? "bg-verde" : "bg-rojo"
-              }`}
+              className={`rounded-lg py-3 font-semibold text-white disabled:opacity-60 ${CONFIRMAR[confirmando].color}`}
             >
-              {guardando ? "Guardando..." : confirmando === "aceptado" ? "Sí, aceptar" : "Sí, rechazar"}
+              {guardando ? "Guardando..." : CONFIRMAR[confirmando].boton}
             </button>
             <button
               type="button"

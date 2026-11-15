@@ -14,6 +14,34 @@ export const ESTADOS: Record<EstadoPedido, { texto: string; clase: string }> = {
   entregado: { texto: "Entregado", clase: "bg-verde text-white" },
 };
 
+// Lo que lee el COMPRADOR debajo de la etiqueta, en Mis pedidos (HU-10, criterio 4).
+// Explica en palabras sencillas en qué va su pedido y si le toca hacer algo.
+export const FRASE_COMPRADOR: Record<EstadoPedido, string> = {
+  pendiente: "Esperando que el productor responda.",
+  aceptado: "El productor aceptó tu pedido. Pronto lo despacha.",
+  en_camino: "Tu pedido va en camino. Cuando lo recibas, confírmalo aquí.",
+  entregado: "Recibido. ¡Gracias por comprar directo al productor!",
+  rechazado: "El productor no pudo atender este pedido.",
+};
+
+// El numerito de "Mis pedidos" (HU-10): cuántos de MIS pedidos van en camino,
+// es decir, cuántos me toca confirmar. Si nadie confirma, la venta nunca se cierra.
+// Aquí se filtra por comprador_id: la regla RLS también me deja ver los que recibí como productor.
+// Devuelve 0 si no hay sesión o si falla: ante la duda, el numerito no aparece.
+export async function contarEnCaminoMisPedidos(): Promise<number> {
+  const { data: sesion } = await supabase.auth.getSession();
+  if (!sesion.session) return 0;
+
+  const { count, error } = await supabase
+    .from("pedidos")
+    .select("id", { count: "exact", head: true })
+    .eq("estado", "en_camino")
+    .eq("comprador_id", sesion.session.user.id);
+
+  if (error) return 0;
+  return count ?? 0;
+}
+
 // El numerito de "Pedidos recibidos" (HU-08, criterio 9).
 // Cuenta los pedidos pendientes de MIS productos. Ojo: la regla RLS de pedidos también
 // me deja ver los que hice como comprador; por eso se une con productos y se filtra

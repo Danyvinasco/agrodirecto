@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { cantidadConUnidad, pesos } from "@/lib/formato";
 import { conPuntosDeMiles, soloDigitos, validarCantidadPedido } from "@/lib/validaciones";
@@ -96,13 +97,19 @@ export default function FormularioPedido({ productoId, compradorId, disponible, 
           Pediste {cantidadConUnidad(enviado.cantidad, unidad)} por {pesos(enviado.cantidad * enviado.precio)}{" "}
           aproximadamente. El productor debe aceptarlo; mientras tanto puedes escribirle por WhatsApp.
         </p>
-        <button
-          type="button"
-          onClick={() => setEnviado(null)}
-          className="self-start text-sm font-semibold text-cafe underline"
-        >
-          Hacer otro pedido
-        </button>
+        {/* HU-10, criterio 8: ir a seguir el pedido. */}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <Link href="/mis-pedidos" className="rounded-lg bg-verde px-4 py-2 font-semibold text-white">
+            Ver mis pedidos
+          </Link>
+          <button
+            type="button"
+            onClick={() => setEnviado(null)}
+            className="text-sm font-semibold text-cafe underline"
+          >
+            Hacer otro pedido
+          </button>
+        </div>
       </div>
     );
   }

@@ -128,10 +128,13 @@ export default function ListaPedidosRecibidos() {
   }
 
   // Criterio 3: pendientes arriba, el más viejo primero (que nadie espere de más).
-  // Los demás, del más reciente al más viejo (así ya vienen de la base).
-  // [...x].reverse() copia antes de voltear: reverse() solo cambiaría el original.
-  const pendientes = [...pedidos.filter((p) => p.estado === "pendiente")].reverse();
-  const anteriores = pedidos.filter((p) => p.estado !== "pendiente");
+  // HU-09: luego los aceptados por despachar, también el más viejo primero.
+  // Los demás (en camino, entregados, rechazados), del más reciente al más viejo
+  // (así ya vienen de la base).
+  // .filter() ya devuelve una lista nueva, así que .reverse() no daña la original.
+  const pendientes = pedidos.filter((p) => p.estado === "pendiente").reverse();
+  const porDespachar = pedidos.filter((p) => p.estado === "aceptado").reverse();
+  const anteriores = pedidos.filter((p) => p.estado !== "pendiente" && p.estado !== "aceptado");
 
   return (
     <div className="flex flex-col gap-8">
@@ -147,6 +150,18 @@ export default function ListaPedidosRecibidos() {
           </div>
         )}
       </section>
+
+      {/* HU-09, criterio 1: solo aparece si hay algo por despachar. */}
+      {porDespachar.length > 0 && (
+        <section>
+          <h2 className="mb-3 text-lg font-bold text-cafe">Por despachar ({porDespachar.length})</h2>
+          <div className="flex flex-col gap-4">
+            {porDespachar.map((p) => (
+              <TarjetaPedidoRecibido key={p.id} pedido={p} ahora={ahora} alCambiar={cargar} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {anteriores.length > 0 && (
         <section>
