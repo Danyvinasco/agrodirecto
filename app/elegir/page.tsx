@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import BotonSesion from "../_componentes/BotonSesion";
+import AccesoPedidosRecibidos from "../_componentes/AccesoPedidosRecibidos";
 
 export const metadata: Metadata = {
   title: "¿Qué quieres hacer hoy? · AgroDirecto",
@@ -40,6 +41,9 @@ export default function PaginaElegir() {
             Comprar
             <span className="block text-sm font-normal opacity-90">Ver el catálogo</span>
           </Link>
+          {/* HU-08: el acceso con el numerito. Es un Client Component dentro de esta
+              pantalla de servidor: solo esa pieza corre en el navegador. */}
+          <AccesoPedidosRecibidos forma="tarjeta" />
         </div>
       </div>
     </main>

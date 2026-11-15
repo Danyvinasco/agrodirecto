@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import BotonSesion from "./_componentes/BotonSesion";
 import BotonPublicar from "./_componentes/BotonPublicar";
+import AccesoPedidosRecibidos from "./_componentes/AccesoPedidosRecibidos";
 import AvisoPublicado from "./_componentes/AvisoPublicado";
 import ListaProductos from "./_catalogo/ListaProductos";
 
@@ -22,6 +23,7 @@ export default function PaginaCatalogo() {
           <h1 className="text-2xl font-bold text-cafe">Catálogo</h1>
         </div>
         <div className="flex items-center gap-3">
+          <AccesoPedidosRecibidos />
           <BotonPublicar />
           <BotonSesion />
         </div>

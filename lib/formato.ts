@@ -26,12 +26,13 @@ function diaEnColombia(fecha: Date): string {
 
 // "Publicado hoy", "Publicado ayer", "Publicado hace 3 días".
 // Cuenta días del calendario, no horas: algo de anoche a las 11 p. m. es "ayer".
-export function haceCuanto(creadoEn: string, ahora: Date): string {
+// palabra (HU-08): para los pedidos se usa "Pedido" -> "Pedido hace 3 días".
+export function haceCuanto(creadoEn: string, ahora: Date, palabra = "Publicado"): string {
   const desde = Date.parse(diaEnColombia(new Date(creadoEn)));
   const hasta = Date.parse(diaEnColombia(ahora));
   const dias = Math.round((hasta - desde) / 86_400_000); // milisegundos en un día
 
-  if (dias <= 0) return "Publicado hoy";
-  if (dias === 1) return "Publicado ayer";
-  return `Publicado hace ${dias} días`;
+  if (dias <= 0) return `${palabra} hoy`;
+  if (dias === 1) return `${palabra} ayer`;
+  return `${palabra} hace ${dias} días`;
 }
