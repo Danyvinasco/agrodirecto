@@ -4,11 +4,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
+import FormularioPedido from "./FormularioPedido";
 
 type Props = {
   productorId: string;
   productoId: number;
   producto: string;
+  // Para el formulario de pedido (HU-07).
+  disponible: number;
+  unidad: string;
+  precio: number;
 };
 
 // Los casos posibles. Como un enum en C#, pero cada caso puede traer sus propios datos.
@@ -16,13 +21,20 @@ type Estado =
   | { tipo: "cargando" }
   | { tipo: "visitante" }
   | { tipo: "dueno" }
-  | { tipo: "listo"; nombre: string; telefono: string }
+  | { tipo: "listo"; nombre: string; telefono: string; compradorId: string }
   | { tipo: "error" };
 
 // Client Component: solo el navegador sabe si hay sesión abierta.
 // El nombre y el teléfono los pide aquí, con la sesión del usuario, y Supabase (RLS)
 // solo los entrega a usuarios registrados (criterio 3, Ley 1581 de 2012).
-export default function ContactoProductor({ productorId, productoId, producto }: Props) {
+export default function ContactoProductor({
+  productorId,
+  productoId,
+  producto,
+  disponible,
+  unidad,
+  precio,
+}: Props) {
   const [estado, setEstado] = useState<Estado>({ tipo: "cargando" });
 
   useEffect(() => {
@@ -47,7 +59,12 @@ export default function ContactoProductor({ productorId, productoId, producto }:
         setEstado({ tipo: "error" });
         return;
       }
-      setEstado({ tipo: "listo", nombre: data.nombre, telefono: data.telefono });
+      setEstado({
+        tipo: "listo",
+        nombre: data.nombre,
+        telefono: data.telefono,
+        compradorId: sesion.session.user.id, // quien hace el pedido es quien tiene la sesión
+      });
     }
     cargar();
   }, [productorId]);
@@ -109,6 +126,17 @@ export default function ContactoProductor({ productorId, productoId, producto }:
           >
             💬 Escribir por WhatsApp
           </a>
+
+          {/* HU-07: debajo de WhatsApp, separado por una línea. */}
+          <div className="mt-2 border-t border-cafe/20 pt-4">
+            <FormularioPedido
+              productoId={productoId}
+              compradorId={estado.compradorId}
+              disponible={disponible}
+              unidad={unidad}
+              precio={precio}
+            />
+          </div>
         </div>
       );
   }

@@ -1,3 +1,5 @@
+import { cantidadConUnidad } from "./formato";
+
 // Reglas del teléfono, iguales a las de la base de datos (migración 07):
 // 10 dígitos, empieza por 3, sin espacios ni +57.
 
@@ -45,6 +47,24 @@ export function validarNumeroProducto(digitos: string, que: string): string | nu
   if (valor > MAXIMO_CANTIDAD_PRECIO) {
     return `${mayuscula(que)} no puede pasar de ${conPuntosDeMiles(String(MAXIMO_CANTIDAD_PRECIO))}. Revisa si sobra un cero.`;
   }
+  return null;
+}
+
+// ---------- Cantidad de un pedido (HU-07) ----------
+
+// Devuelve el mensaje de error, o null si la cantidad está bien.
+// Recibe solo dígitos (ya pasados por soloDigitos), lo que hay disponible y la unidad del producto.
+// Son las mismas reglas del trigger revisar_pedido_nuevo (migración 09):
+// la pantalla avisa rápido y la base pone el candado.
+export function validarCantidadPedido(
+  digitos: string,
+  disponible: number,
+  unidad: string,
+): string | null {
+  if (digitos.length === 0) return "Escribe cuánto quieres pedir.";
+  const valor = Number(digitos);
+  if (valor <= 0) return "La cantidad debe ser mayor que 0.";
+  if (valor > disponible) return `Solo hay ${cantidadConUnidad(disponible, unidad)} disponibles.`;
   return null;
 }
 

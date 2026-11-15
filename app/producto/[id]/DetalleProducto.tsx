@@ -75,7 +75,14 @@ export default async function DetalleProducto({ id }: { id: string }) {
 
         {/* Contacto: se arma en el navegador, con la sesión de quien mira (criterios 3 a 6).
             productor_id es público (la regla del catálogo deja verlo); nombre y teléfono no. */}
-        <ContactoProductor productorId={p.productor_id} productoId={p.id} producto={p.producto} />
+        <ContactoProductor
+          productorId={p.productor_id}
+          productoId={p.id}
+          producto={p.producto}
+          disponible={cantidad}
+          unidad={p.unidad}
+          precio={Number(p.precio)}
+        />
       </div>
     </article>
   );
