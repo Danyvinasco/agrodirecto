@@ -1,11 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import Image from "next/image";
-import BotonSesion from "./_componentes/BotonSesion";
-import BotonPublicar from "./_componentes/BotonPublicar";
-import AccesoPedidosRecibidos from "./_componentes/AccesoPedidosRecibidos";
-import AccesoMisPedidos from "./_componentes/AccesoMisPedidos";
 import AvisoPublicado from "./_componentes/AvisoPublicado";
+import Bienvenida from "./_catalogo/Bienvenida";
 import ListaProductos from "./_catalogo/ListaProductos";
 
 export const metadata: Metadata = {
@@ -13,24 +9,13 @@ export const metadata: Metadata = {
 };
 
 // Pantalla 4 del boceto: el catálogo (HU-05). La ve cualquiera, con o sin cuenta.
-// El marco (logo, título, botones) se prepara de antemano; la lista llega por streaming.
+// El marco (bienvenida y accesos) se prepara de antemano; la lista llega por streaming.
 export default function PaginaCatalogo() {
   return (
+    // pt-4 en celular: arriba se ahorra espacio para que se vea la primera tarjeta.
     // pb-28 en celular: deja espacio para que el botón fijo "Publicar producto" no tape el último producto.
-    <main className="mx-auto w-full max-w-6xl px-4 py-6 pb-28 md:pb-6">
-      <header className="mb-4 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <Image src="/logo.png" alt="AgroDirecto" width={44} height={44} priority />
-          <h1 className="text-2xl font-bold text-cafe">Catálogo</h1>
-        </div>
-        {/* flex-wrap: en un celular angosto, los accesos bajan a otra línea en vez de apretarse. */}
-        <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1">
-          <AccesoMisPedidos />
-          <AccesoPedidosRecibidos />
-          <BotonPublicar />
-          <BotonSesion />
-        </div>
-      </header>
+    <main className="mx-auto w-full max-w-6xl px-4 pb-28 pt-4 md:py-6">
+      <Bienvenida />
 
       {/* AvisoPublicado lee la dirección con useSearchParams: necesita su propio Suspense. */}
       <Suspense fallback={null}>

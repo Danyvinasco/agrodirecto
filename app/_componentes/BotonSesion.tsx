@@ -3,12 +3,19 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { CLASE_PESTANA, IconoConNumerito } from "./Pestana";
 
-// Botón pequeño para la esquina de la pantalla:
+type Props = {
+  // "esquina": el botón pequeño de siempre (detalle, publicar, elegir, pedidos...).
+  // "pestaña": como pestaña del encabezado del catálogo, junto a Mis pedidos y Recibidos.
+  forma?: "esquina" | "pestaña";
+};
+
+// Botón de sesión:
 // - con sesión abierta muestra "Cerrar sesión";
 // - sin sesión (visitante) muestra el enlace "Iniciar sesión".
 // La carpeta empieza con "_" para que Next.js no la convierta en una ruta (/_componentes).
-export default function BotonSesion() {
+export default function BotonSesion({ forma = "esquina" }: Props) {
   // null = todavía no sabemos si hay sesión (no mostramos nada para evitar parpadeos).
   const [conSesion, setConSesion] = useState<boolean | null>(null);
 
@@ -27,6 +34,20 @@ export default function BotonSesion() {
   }
 
   if (conSesion === null) return null;
+
+  if (forma === "pestaña") {
+    return conSesion ? (
+      <button type="button" onClick={cerrarSesion} className={CLASE_PESTANA}>
+        <IconoConNumerito icono="🚪" />
+        Cerrar sesión
+      </button>
+    ) : (
+      <Link href="/login" className={CLASE_PESTANA}>
+        <IconoConNumerito icono="👤" />
+        Iniciar sesión
+      </Link>
+    );
+  }
 
   if (!conSesion) {
     return (

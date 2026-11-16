@@ -4,7 +4,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { contarEnCaminoMisPedidos } from "@/lib/pedidos";
 import { useNumerito } from "./useNumerito";
-import Numerito from "./Numerito";
+import { CLASE_PESTANA, IconoConNumerito } from "./Pestana";
 
 // La pregunta para el numerito: null si no hay sesión (el visitante no ve el acceso),
 // o cuántos de mis pedidos van en camino (los que me toca confirmar).
@@ -24,13 +24,10 @@ export default function AccesoMisPedidos() {
   const descripcion = enCamino > 0 ? `Mis pedidos, ${enCamino} por confirmar` : "Mis pedidos";
 
   return (
-    <Link
-      href="/mis-pedidos"
-      aria-label={descripcion}
-      className="flex items-center gap-1.5 text-sm font-semibold text-cafe"
-    >
-      🧾 Mis pedidos
-      <Numerito cuantos={enCamino} />
+    // Pestaña del encabezado del catálogo: ícono arriba con su numerito, palabra abajo.
+    <Link href="/mis-pedidos" aria-label={descripcion} className={CLASE_PESTANA}>
+      <IconoConNumerito icono="🧾" cuantos={enCamino} />
+      Mis pedidos
     </Link>
   );
 }

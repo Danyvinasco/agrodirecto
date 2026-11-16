@@ -5,11 +5,12 @@ import { sesionEsProductor } from "@/lib/roles";
 import { contarPendientesRecibidos } from "@/lib/pedidos";
 import { useNumerito } from "./useNumerito";
 import Numerito from "./Numerito";
+import { CLASE_PESTANA, IconoConNumerito } from "./Pestana";
 
 type Props = {
-  // "enlace": pequeño, para el encabezado del catálogo.
+  // "pestaña": para el encabezado del catálogo, junto a Mis pedidos y Cerrar sesión.
   // "tarjeta": grande, para la pantalla "¿Qué quieres hacer hoy?".
-  forma?: "enlace" | "tarjeta";
+  forma?: "pestaña" | "tarjeta";
 };
 
 // La pregunta para el numerito: null si no vende (el acceso no aparece),
@@ -21,7 +22,7 @@ async function contarRecibidos(): Promise<number | null> {
 
 // Acceso a "Pedidos recibidos" con el numerito de pendientes (HU-08, criterios 9 y 10).
 // Solo lo ve quien también vende; al visitante y al comprador nunca les aparece.
-export default function AccesoPedidosRecibidos({ forma = "enlace" }: Props) {
+export default function AccesoPedidosRecibidos({ forma = "pestaña" }: Props) {
   const pendientes = useNumerito(contarRecibidos);
   if (pendientes === null) return null;
 
@@ -46,13 +47,9 @@ export default function AccesoPedidosRecibidos({ forma = "enlace" }: Props) {
 
   // Decisión de Dany (HU-10): "Recibidos" = los que me hicieron; "Mis pedidos" = los que yo hice.
   return (
-    <Link
-      href="/pedidos-recibidos"
-      aria-label={descripcion}
-      className="flex items-center gap-1.5 text-sm font-semibold text-cafe"
-    >
-      📥 Recibidos
-      <Numerito cuantos={pendientes} />
+    <Link href="/pedidos-recibidos" aria-label={descripcion} className={CLASE_PESTANA}>
+      <IconoConNumerito icono="📥" cuantos={pendientes} />
+      Recibidos
     </Link>
   );
 }
