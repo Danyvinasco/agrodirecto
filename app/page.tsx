@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import AvisoPublicado from "./_componentes/AvisoPublicado";
 import Bienvenida from "./_catalogo/Bienvenida";
 import ListaProductos from "./_catalogo/ListaProductos";
@@ -28,13 +27,6 @@ export default function PaginaCatalogo() {
       <Suspense fallback={<p className="py-10 text-center text-cafe/70">Cargando productos...</p>}>
         <ListaProductos />
       </Suspense>
-
-      {/* Pie discreto: lo ve todo el mundo, visitante incluido (no depende de la sesión). */}
-      <footer className="mt-10 text-center">
-        <Link href="/sobre-nosotros" className="text-sm text-cafe/70 underline underline-offset-2">
-          Sobre AgroDirecto
-        </Link>
-      </footer>
     </main>
   );
 }
