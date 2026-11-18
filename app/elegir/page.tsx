@@ -44,6 +44,13 @@ export default function PaginaElegir() {
           {/* HU-08: el acceso con el numerito. Es un Client Component dentro de esta
               pantalla de servidor: solo esa pieza corre en el navegador. */}
           <AccesoPedidosRecibidos forma="tarjeta" />
+          {/* HU-04: ver lo publicado, quitar publicaciones y volver a publicarlas. */}
+          <Link
+            href="/mis-productos"
+            className="flex items-center justify-center gap-3 rounded-xl border-2 border-cafe bg-white py-5 text-xl font-semibold text-cafe"
+          >
+            🧺 Mis productos
+          </Link>
         </div>
       </div>
     </main>

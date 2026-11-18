@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
+import CambiarPublicacion from "../../_componentes/CambiarPublicacion";
 import FormularioPedido from "./FormularioPedido";
 
 type Props = {
@@ -97,9 +98,26 @@ export default function ContactoProductor({
 
     case "dueno":
       return (
-        <p className={`${caja} font-semibold`}>
-          Este es tu producto. Así lo ven los compradores en el catálogo.
-        </p>
+        <div className={`${caja} flex flex-col gap-3`}>
+          <p className="font-semibold">Este es tu producto. Así lo ven los compradores en el catálogo.</p>
+          {/* HU-04: solo el dueño ve este botón (criterio 1). Este detalle solo se abre si
+              el producto está publicado, así que aquí siempre es "Quitar publicación".
+              Después va a Mis productos, donde lo verá "Fuera del catálogo".
+              Recarga completa (no router.push), como al publicar: con cacheComponents, Next
+              guardaría escondidos el catálogo y este detalle con el producto todavía visible. */}
+          <CambiarPublicacion
+            productoId={productoId}
+            producto={producto}
+            publicado={true}
+            cantidad={disponible}
+            unidad={unidad}
+            // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+            alCambiar={() => (window.location.href = "/mis-productos")}
+          />
+          <Link href="/mis-productos" className="text-center text-sm font-semibold text-cafe underline">
+            Ver todos mis productos
+          </Link>
+        </div>
       );
 
     case "error":

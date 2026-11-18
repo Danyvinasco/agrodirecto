@@ -14,6 +14,7 @@ export default async function ListaProductos() {
     .from("productos")
     .select("id, created_at, producto, variedad, calidad, cantidad, precio, unidad, foto_url, municipio")
     .gt("cantidad", 0) // criterio 5: lo agotado no se muestra
+    .eq("publicado", true) // HU-04: lo que el productor quitó del catálogo tampoco
     .order("created_at", { ascending: false }); // criterio 5: lo más reciente primero
 
   if (error) {

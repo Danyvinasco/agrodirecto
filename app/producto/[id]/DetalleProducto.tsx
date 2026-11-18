@@ -17,7 +17,7 @@ export default async function DetalleProducto({ id }: { id: string }) {
 
   const { data: p, error } = await supabase
     .from("productos")
-    .select("id, productor_id, created_at, producto, variedad, calidad, cantidad, precio, unidad, foto_url, municipio")
+    .select("id, productor_id, created_at, producto, variedad, calidad, cantidad, precio, unidad, foto_url, municipio, publicado")
     .eq("id", idNumero)
     .maybeSingle(); // como FirstOrDefault en C#: una fila o null
 
@@ -28,8 +28,9 @@ export default async function DetalleProducto({ id }: { id: string }) {
       </p>
     );
   }
-  // Criterio 7: no existe o ya se agotó.
-  if (!p || Number(p.cantidad) <= 0) return <NoDisponible />;
+  // Criterio 7: no existe, ya se agotó o el productor lo quitó del catálogo (HU-04).
+  // Al dueño también: él lo maneja desde Mis productos.
+  if (!p || Number(p.cantidad) <= 0 || !p.publicado) return <NoDisponible />;
 
   const cantidad = Number(p.cantidad);
 
